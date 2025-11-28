@@ -1,4 +1,5 @@
 package com.recetas.model;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -14,16 +15,17 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "recipes")
 public class Recipe {
-        @jakarta.persistence.PrePersist
-        protected void onCreate() {
-            this.createdAt = LocalDateTime.now();
-            this.updatedAt = LocalDateTime.now();
-        }
 
-        @jakarta.persistence.PreUpdate
-        protected void onUpdate() {
-            this.updatedAt = LocalDateTime.now();
-        }
+    @jakarta.persistence.PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @jakarta.persistence.PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -50,4 +52,16 @@ public class Recipe {
     private Set<RecipeFood> recipeFoods;
 
     // getters and setters
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public String getSteps() { return steps; }
+    public void setSteps(String steps) { this.steps = steps; }
+    public Set<Condition> getConditions() { return conditions; }
+    public void setConditions(Set<Condition> conditions) { this.conditions = conditions; }
+    public Set<RecipeFood> getRecipeFoods() { return recipeFoods; }
+    public void setRecipeFoods(Set<RecipeFood> recipeFoods) { this.recipeFoods = recipeFoods; }
 }

@@ -1,4 +1,5 @@
 package com.recetas.model;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -16,16 +17,17 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "foods")
 public class Food {
-        @jakarta.persistence.PrePersist
-        protected void onCreate() {
-            this.createdAt = LocalDateTime.now();
-            this.updatedAt = LocalDateTime.now();
-        }
 
-        @jakarta.persistence.PreUpdate
-        protected void onUpdate() {
-            this.updatedAt = LocalDateTime.now();
-        }
+    @jakarta.persistence.PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @jakarta.persistence.PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -50,8 +52,41 @@ public class Food {
     private Set<RecipeFood> recipeFoods;
 
     // getters and setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public FoodCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(FoodCategory category) {
+        this.category = category;
+    }
 
     public enum FoodCategory {
-        VEGETABLE, DAIRY, MEAT, LEGUME, OTHER
+        VEGETABLE,
+        FRUIT,
+        MEAT,
+        DAIRY,
+        LEGUME,
+        CEREAL,
+        NUT,
+        SNACK,
+        DRINK,
+        CONDIMENT,
+        OTHER
     }
 }

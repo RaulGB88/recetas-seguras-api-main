@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "recipe_foods")
 public class RecipeFood {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -28,4 +29,8 @@ public class RecipeFood {
     private String quantity;
 
     // getters and setters
+    public Recipe getRecipe() { return recipe; }
+    public void setRecipe(Recipe recipe) { this.recipe = recipe; }
+    public Food getFood() { return food; }
+    public void setFood(Food food) { this.food = food; }
 }

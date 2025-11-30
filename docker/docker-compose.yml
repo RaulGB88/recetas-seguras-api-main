@@ -1,0 +1,38 @@
+services:
+  app:
+    image: maven:3.9-eclipse-temurin-17
+    container_name: backend
+    working_dir: /app
+    volumes:
+      - ./src/main/java/com/recetas:/app
+    command: ["sh", "-c", "./mvnw spring-boot:run"]
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+    networks:
+      - recetas-net
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-database
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - recetas-net
+
+networks:
+  recetas-net:
+
+volumes:
+  mysql-data:

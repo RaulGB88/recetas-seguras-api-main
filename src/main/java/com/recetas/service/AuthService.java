@@ -98,4 +98,20 @@ public class AuthService {
         rt.setRevoked(false);
         return rt;
     }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+            Optional<User> userOpt = userRepository.findByEmail(email);
+            if (userOpt.isEmpty()) {
+                return false;
+            }
+            User user = userOpt.get();
+            // Verifica la contraseña actual
+            if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+                return false;
+            }
+            // Actualiza la contraseña
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return true;
+    }
 }

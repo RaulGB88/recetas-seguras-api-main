@@ -18,6 +18,9 @@ import com.recetas.service.AuthService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -69,5 +72,29 @@ public class AuthController {
                 "email", user.getEmail(),
                 "username", user.getUsername()
         ))).orElseGet(() -> ResponseEntity.status(404).build());
+    }
+
+    /**
+     * Cambia la contraseña del usuario autenticado. Body: { "oldPassword":
+     * "...", "newPassword": "..." }
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody java.util.Map<String, String> body) {
+        if (userDetails == null || userDetails.getUsername() == null) {
+            return ResponseEntity.status(401).body("No autenticado");
+        }
+        String email = userDetails.getUsername();
+        String oldPassword = body.get("oldPassword");
+        String newPassword = body.get("newPassword");
+        if (oldPassword == null || newPassword == null) {
+            return ResponseEntity.badRequest().body("Faltan campos");
+        }
+        boolean ok = authService.changePassword(email, oldPassword, newPassword);
+        if (ok) {
+            return ResponseEntity.ok().body("Contraseña actualizada");
+        } else {
+            return ResponseEntity.status(400).body("Contraseña actual incorrecta o error");
+        }
     }
 }

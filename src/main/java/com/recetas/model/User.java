@@ -97,6 +97,4 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "condition_id")
     )
     private Set<Condition> conditions;
-
-    // getters and setters
 }

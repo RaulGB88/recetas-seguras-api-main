@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.recetas.repository.RefreshTokenRepository;
 
+// Servicio de limpieza: elimino refresh tokens expirados periódicamente
 @Service
 public class RefreshTokenCleanupService {
     private final RefreshTokenRepository refreshTokenRepository;
@@ -18,7 +19,7 @@ public class RefreshTokenCleanupService {
         this.refreshTokenRepository = refreshTokenRepository;
     }
 
-    // runs every hour by default; configurable via app.token.cleanup-ms
+    // Se ejecuta cada hora por defecto; configurable via app.token.cleanup-ms
     @Scheduled(fixedDelayString = "${app.token.cleanup-ms:3600000}")
     public void cleanupExpiredRefreshTokens() {
         Instant now = Instant.now();

@@ -15,16 +15,19 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+// Entidad Condición: representa una condición médica (enfermedad, alergia, intolerancia) y sus alimentos prohibidos
 @Entity
 @Table(name = "conditions")
 public class Condition {
 
+    // Establezco timestamps al crear el registro
     @jakarta.persistence.PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    // Actualizo el timestamp al modificar el registro
     @jakarta.persistence.PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
@@ -59,22 +62,6 @@ public class Condition {
             inverseJoinColumns = @JoinColumn(name = "food_id")
     )
     private Set<Food> foods;
-
-    @ManyToMany
-    @JoinTable(
-            name = "condition_recipes",
-            joinColumns = @JoinColumn(name = "condition_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
-    private Set<Recipe> recipes;
-
-    public Set<Recipe> getRecipes() {
-        return recipes;
-    }
-
-    public void setRecipes(Set<Recipe> recipes) {
-        this.recipes = recipes;
-    }
 
     // getters and setters
     public Set<Food> getFoods() {

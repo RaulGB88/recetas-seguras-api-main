@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+// DTO para solicitud de autenticación (login)
 public class AuthRequest {
     @NotBlank
     @Email

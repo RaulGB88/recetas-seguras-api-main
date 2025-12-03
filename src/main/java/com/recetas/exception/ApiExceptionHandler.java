@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+// Manejador de excepciones de API: capturo y formatea errores en respuestas consistentes
 @ControllerAdvice
 public class ApiExceptionHandler {
 
+    // Manejo excepciones genéricas de runtime
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleRuntime(RuntimeException ex, WebRequest req) {
         Map<String,Object> body = new HashMap<>();
@@ -24,6 +26,7 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    // Manejo errores de validación de datos de entrada
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidation(org.springframework.web.bind.MethodArgumentNotValidException ex, WebRequest req) {
         Map<String,Object> body = new HashMap<>();

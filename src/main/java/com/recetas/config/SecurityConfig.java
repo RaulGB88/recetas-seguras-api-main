@@ -19,6 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.recetas.security.JwtAuthFilter;
 
+// Configuración de seguridad: defino reglas de autenticación, CORS y filtros JWT
 @Configuration
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
@@ -27,6 +28,7 @@ public class SecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
+    // Configuro la cadena de filtros de seguridad HTTP
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -44,6 +46,7 @@ public class SecurityConfig {
     @Value("${app.cors.allowed-origins:*}")
     private String allowedOrigins;
 
+    // Configuro CORS para permitir requests desde orígenes específicos
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -60,11 +63,13 @@ public class SecurityConfig {
         return source;
     }
 
+    // Configuro el encoder de contraseñas con BCrypt
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Configuro el AuthenticationManager de Spring Security
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();

@@ -14,16 +14,19 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+// Entidad Alimento: representa un alimento con su categoría y relaciones con condiciones
 @Entity
 @Table(name = "foods")
 public class Food {
 
+    // Establezco timestamps al crear el registro
     @jakarta.persistence.PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    // Actualizo el timestamp al modificar el registro
     @jakarta.persistence.PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();

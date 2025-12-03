@@ -16,6 +16,7 @@ import com.recetas.repository.FoodRepository;
 import com.recetas.repository.RecipeRepository;
 import com.recetas.repository.UserRepository;
 
+// Servicio de usuarios: lógica de negocio para gestionar usuarios, condiciones y filtros de seguridad alimentaria
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -29,16 +30,16 @@ public class UserService {
         this.foodRepository = foodRepository;
         this.recipeRepository = recipeRepository;
     }
-    // Lógica para obtener recetas seguras para todas las condiciones del usuario y cuyos ingredientes no estén prohibidos
+    // Obtengo recetas seguras: filtro las que no tengan ingredientes prohibidos por las condiciones del usuario
     public List<RecipeDto> getSafeRecipes(@org.springframework.lang.NonNull Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         var userConditions = user.getConditions();
-        // Reunir todos los alimentos prohibidos por las condiciones del usuario
+        // Reúno todos los alimentos prohibidos por las condiciones del usuario
         var forbiddenFoods = userConditions.stream()
             .filter(cond -> cond.getFoods() != null)
             .flatMap(cond -> cond.getFoods().stream())
             .collect(Collectors.toSet());
-        // Filtrar recetas que sean seguras para el usuario (ningún ingrediente prohibido)
+        // Filtro recetas que sean seguras (ningún ingrediente prohibido)
         return recipeRepository.findAll().stream()
             .filter(recipe -> {
                 if (recipe.getRecipeFoods() != null) {
@@ -56,15 +57,28 @@ public class UserService {
                 dto.title = recipe.getTitle();
                 dto.description = recipe.getDescription();
                 dto.steps = recipe.getSteps();
+                dto.ingredients = recipe.getRecipeFoods() != null 
+                    ? recipe.getRecipeFoods().stream()
+                        .map(rf -> {
+                            RecipeDto.RecipeIngredientDto ingredient = new RecipeDto.RecipeIngredientDto();
+                            ingredient.foodId = rf.getFood().getId();
+                            ingredient.foodName = rf.getFood().getName();
+                            ingredient.quantity = rf.getQuantity();
+                            return ingredient;
+                        })
+                        .collect(Collectors.toList())
+                    : List.of();
                 return dto;
             })
             .collect(Collectors.toList());
     }
 
+    // Obtengo todos los usuarios del repositorio
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // Asigno condiciones médicas a un usuario específico
     public List<ConditionDto> setUserConditions(@org.springframework.lang.NonNull Integer userId, List<Integer> conditionIds) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         List<Condition> conditions = conditionRepository.findAllById(() -> conditionIds.iterator());
@@ -80,10 +94,10 @@ public class UserService {
         }).collect(Collectors.toList());
     }
 
-    // Lógica para obtener comidas permitidas (no prohibidas por ninguna condición del usuario)
+    // Obtengo comidas permitidas: filtro las que NO estén prohibidas por ninguna condición del usuario
     public List<FoodDto> getSafeFoods(@org.springframework.lang.NonNull Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        // Reunir todos los alimentos prohibidos por las condiciones del usuario
+        // Reúno todos los alimentos prohibidos por las condiciones del usuario
         var forbiddenFoods = user.getConditions().stream()
             .filter(cond -> cond.getFoods() != null)
             .flatMap(cond -> cond.getFoods().stream())
@@ -96,6 +110,21 @@ public class UserService {
                 dto.id = food.getId();
                 dto.name = food.getName();
                 dto.category = food.getCategory() != null ? food.getCategory().name() : null;
+                return dto;
+            })
+            .collect(Collectors.toList());
+    }
+
+    // Obtengo las condiciones médicas asociadas a un usuario
+    public List<ConditionDto> getUserConditions(@org.springframework.lang.NonNull Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getConditions().stream()
+            .map(cond -> {
+                ConditionDto dto = new ConditionDto();
+                dto.id = cond.getId();
+                dto.name = cond.getName();
+                dto.description = cond.getDescription();
+                dto.conditionType = cond.getConditionType().name();
                 return dto;
             })
             .collect(Collectors.toList());

@@ -14,16 +14,19 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+// Entidad Alimento: representa un alimento con su categoría y relaciones con condiciones
 @Entity
 @Table(name = "foods")
 public class Food {
 
+    // Establezco timestamps al crear el registro
     @jakarta.persistence.PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    // Actualizo el timestamp al modificar el registro
     @jakarta.persistence.PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
@@ -77,16 +80,27 @@ public class Food {
     }
 
     public enum FoodCategory {
-        VEGETABLE,
-        FRUIT,
-        MEAT,
-        DAIRY,
-        LEGUME,
-        CEREAL,
-        NUT,
-        SNACK,
-        DRINK,
-        CONDIMENT,
-        OTHER
+        VEGETAL("Vegetal"),
+        FRUTA("Fruta"),
+        CARNE("Carne"),
+        LACTEO("Lácteo"),
+        LEGUMBRE("Legumbre"),
+        CEREAL("Cereal"),
+        FRUTO_SECO("Fruto Seco"),
+        SNACK("Snack"),
+        BEBIDA("Bebida"),
+        CONDIMENTO("Condimento"),
+        OTHER("Otro");
+
+        private final String displayName;
+
+        FoodCategory(String displayName) {
+            this.displayName = displayName;
+        }
+
+        @com.fasterxml.jackson.annotation.JsonValue
+        public String getDisplayName() {
+            return displayName;
+        }
     }
 }

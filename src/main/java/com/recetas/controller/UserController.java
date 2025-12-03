@@ -16,6 +16,7 @@ import com.recetas.dto.UserConditionRequest;
 import com.recetas.model.User;
 import com.recetas.service.UserService;
 
+// Controlador de usuarios: gestiono condiciones, alimentos y recetas seguras por usuario
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -25,24 +26,31 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Obtengo todos los usuarios
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // POST /api/users/{id}/conditions
+    // Obtengo las condiciones del usuario
+    @GetMapping("/{id}/conditions")
+    public List<ConditionDto> getUserConditions(@PathVariable @org.springframework.lang.NonNull Integer id) {
+        return userService.getUserConditions(id);
+    }
+
+    // Asigno condiciones a un usuario
     @PostMapping("/{id}/conditions")
     public List<ConditionDto> setUserConditions(@PathVariable @org.springframework.lang.NonNull Integer id, @RequestBody UserConditionRequest request) {
         return userService.setUserConditions(id, request.conditionIds);
     }
 
-    // GET /api/users/{id}/safe-foods
+    // Obtengo alimentos seguros para el usuario según sus condiciones
     @GetMapping("/{id}/safe-foods")
     public List<FoodDto> getSafeFoods(@PathVariable @org.springframework.lang.NonNull Integer id) {
         return userService.getSafeFoods(id);
     }
 
-    // GET /api/users/{id}/safe-recipes
+    // Obtengo recetas seguras para el usuario según sus condiciones
     @GetMapping("/{id}/safe-recipes")
     public List<RecipeDto> getSafeRecipes(@PathVariable @org.springframework.lang.NonNull Integer id) {
         return userService.getSafeRecipes(id);

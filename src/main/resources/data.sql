@@ -142,7 +142,7 @@ INSERT INTO condition_foods (condition_id, food_id) VALUES (6, 403); -- yogur
 INSERT INTO condition_foods (condition_id, food_id) VALUES (6, 404); -- manteca
 INSERT INTO condition_foods (condition_id, food_id) VALUES (6, 405); -- crema
 
--- Alergia al huevo: huevo, mayonesa, pasteles, panqueques, flan (no están en la lista, puedes agregarlos si lo necesitas)
+-- Alergia al huevo: huevo, mayonesa, pasteles, panqueques, flan (no están en la lista, se pueden agregar)
 
 -- Intolerancia a la lactosa: leche, yogur, queso, manteca, crema
 INSERT INTO condition_foods (condition_id, food_id) VALUES (11, 401); -- leche
@@ -151,4 +151,4 @@ INSERT INTO condition_foods (condition_id, food_id) VALUES (11, 403); -- yogur
 INSERT INTO condition_foods (condition_id, food_id) VALUES (11, 404); -- manteca
 INSERT INTO condition_foods (condition_id, food_id) VALUES (11, 405); -- crema
 
--- Puedes continuar agregando asociaciones según la lista y el modelo.
+-- Se pueden continuar agregando asociaciones según la lista y el modelo.

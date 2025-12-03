@@ -57,8 +57,8 @@ public class UserControllerIntegrationTest {
         String password = "Password123";
 
         FoodDto food1 = new FoodDto(); food1.name = "Manzana"; food1.category = "OTHER";
-        FoodDto food2 = new FoodDto(); food2.name = "Leche"; food2.category = "DAIRY";
-        FoodDto food3 = new FoodDto(); food3.name = "Carne"; food3.category = "MEAT";
+        FoodDto food2 = new FoodDto(); food2.name = "Leche"; food2.category = "LACTEO";
+        FoodDto food3 = new FoodDto(); food3.name = "Carne"; food3.category = "CARNE";
         var foodEntity1 = new com.recetas.model.Food();
         foodEntity1.setName(food1.name);
         foodEntity1.setCategory(com.recetas.model.Food.FoodCategory.OTHER);
@@ -66,12 +66,12 @@ public class UserControllerIntegrationTest {
 
         var foodEntity2 = new com.recetas.model.Food();
         foodEntity2.setName(food2.name);
-        foodEntity2.setCategory(com.recetas.model.Food.FoodCategory.DAIRY);
+        foodEntity2.setCategory(com.recetas.model.Food.FoodCategory.LACTEO);
         var f2 = foodRepository.save(foodEntity2);
 
         var foodEntity3 = new com.recetas.model.Food();
         foodEntity3.setName(food3.name);
-        foodEntity3.setCategory(com.recetas.model.Food.FoodCategory.MEAT);
+        foodEntity3.setCategory(com.recetas.model.Food.FoodCategory.CARNE);
         var f3 = foodRepository.save(foodEntity3);
 
         ConditionDto condDto = new ConditionDto(); condDto.name = "Intolerancia a la lactosa"; condDto.conditionType = "INTOLERANCE";
@@ -118,14 +118,11 @@ public class UserControllerIntegrationTest {
         Assertions.assertEquals(HttpStatus.OK, condResp.getStatusCode());
 
         user = userRepository.findById(user.getId()).orElseThrow();
-        var condReloaded = conditionRepository.findById(cond.getId()).orElseThrow();
 
         var receta1 = new com.recetas.model.Recipe(); receta1.setTitle("Ensalada de manzana"); receta1.setDescription("Solo manzana"); receta1.setSteps("Cortar y servir");
-        receta1.setConditions(Set.of(condReloaded));
         receta1 = recipeRepository.save(receta1);
 
         var receta2 = new com.recetas.model.Recipe(); receta2.setTitle("Leche con carne"); receta2.setDescription("Leche y carne"); receta2.setSteps("Mezclar y servir");
-        receta2.setConditions(Set.of(condReloaded));
         receta2 = recipeRepository.save(receta2);
 
         var rf1 = new com.recetas.model.RecipeFood(); rf1.setRecipe(receta1); rf1.setFood(f1);

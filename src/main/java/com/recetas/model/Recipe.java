@@ -8,20 +8,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+// Entidad Receta: representa una receta con sus ingredientes
 @Entity
 @Table(name = "recipes")
 public class Recipe {
 
+    // Establezco timestamps al crear el registro
     @jakarta.persistence.PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
+    // Actualizo el timestamp al modificar el registro
     @jakarta.persistence.PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
@@ -45,9 +47,6 @@ public class Recipe {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @ManyToMany(mappedBy = "recipes")
-    private Set<Condition> conditions;
-
     @OneToMany(mappedBy = "recipe")
     private Set<RecipeFood> recipeFoods;
 
@@ -60,8 +59,6 @@ public class Recipe {
     public void setDescription(String description) { this.description = description; }
     public String getSteps() { return steps; }
     public void setSteps(String steps) { this.steps = steps; }
-    public Set<Condition> getConditions() { return conditions; }
-    public void setConditions(Set<Condition> conditions) { this.conditions = conditions; }
     public Set<RecipeFood> getRecipeFoods() { return recipeFoods; }
     public void setRecipeFoods(Set<RecipeFood> recipeFoods) { this.recipeFoods = recipeFoods; }
 }

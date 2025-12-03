@@ -2,7 +2,9 @@ package com.recetas.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +20,7 @@ import com.recetas.service.AuthService;
 
 import jakarta.validation.Valid;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-
+// Controlador de autenticación: manejo registro, login, refresh token, logout y cambio de contraseña
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -33,18 +33,21 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
+    // Registro de nuevo usuario y auto-login
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
         AuthResponse res = authService.register(req);
         return ResponseEntity.status(201).body(res);
     }
 
+    // Login con email y contraseña
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest req) {
         AuthResponse res = authService.login(req);
         return ResponseEntity.ok(res);
     }
 
+    // Refresco del access token usando el refresh token
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody java.util.Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
@@ -52,6 +55,7 @@ public class AuthController {
         return ResponseEntity.ok(res);
     }
 
+    // Logout: revoco el refresh token
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody java.util.Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
@@ -59,6 +63,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    // Obtengo información del usuario autenticado
     @GetMapping("/me")
     public ResponseEntity<?> me() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -74,10 +79,7 @@ public class AuthController {
         ))).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
-    /**
-     * Cambia la contraseña del usuario autenticado. Body: { "oldPassword":
-     * "...", "newPassword": "..." }
-     */
+    // Cambio la contraseña del usuario autenticado. Body: { "oldPassword": "...", "newPassword": "..." }
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody java.util.Map<String, String> body) {

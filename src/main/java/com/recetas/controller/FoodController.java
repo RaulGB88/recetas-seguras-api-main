@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recetas.model.Food;
 import com.recetas.service.FoodService;
 
+// Controlador de alimentos: manejo consultas de todos los alimentos disponibles
 @RestController
 @RequestMapping("/api/foods")
 public class FoodController {
@@ -18,6 +19,7 @@ public class FoodController {
         this.foodService = foodService;
     }
 
+    // Obtengo todos los alimentos
     @GetMapping
     public List<Food> getAllFoods() {
         return foodService.getAllFoods();

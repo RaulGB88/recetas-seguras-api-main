@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+// Manejador global de excepciones: capturo errores de autenticación y generales del sistema
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Manejo excepción de usuario no encontrado
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleUsernameNotFound(UsernameNotFoundException ex) {
@@ -22,7 +24,7 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // Puedes agregar otros handlers aquí para más coherencia
+    // Manejo errores de runtime genéricos
         @ExceptionHandler(RuntimeException.class)
         @ResponseBody
         public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
@@ -33,6 +35,7 @@ public class GlobalExceptionHandler {
             ));
         }
 
+    // Manejo excepciones genéricas no capturadas por otros handlers
         @ExceptionHandler(Exception.class)
         @ResponseBody
         public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {

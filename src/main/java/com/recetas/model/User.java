@@ -12,15 +12,18 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
+// Entidad Usuario: representa un usuario del sistema con sus condiciones médicas
 @Entity
 @Table(name = "users")
 public class User {
+        // Establezco timestamps al crear el registro
         @jakarta.persistence.PrePersist
         protected void onCreate() {
             this.createdAt = LocalDateTime.now();
             this.updatedAt = LocalDateTime.now();
         }
 
+        // Actualizo el timestamp al modificar el registro
         @jakarta.persistence.PreUpdate
         protected void onUpdate() {
             this.updatedAt = LocalDateTime.now();

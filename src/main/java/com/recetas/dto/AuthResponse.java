@@ -1,5 +1,6 @@
 package com.recetas.dto;
 
+// DTO para respuesta de autenticación con tokens y metadata
 public class AuthResponse {
     private String accessToken;
     private String refreshToken;

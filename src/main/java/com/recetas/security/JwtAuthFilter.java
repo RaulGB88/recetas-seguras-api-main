@@ -18,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+// Filtro de autenticación JWT: intercepto requests y valido tokens en el header Authorization
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
@@ -29,6 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
+    // Proceso cada request: extraigo y valido el JWT del header Authorization
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {

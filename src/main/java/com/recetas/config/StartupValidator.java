@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
+// Validador de inicio: verifico que las variables de entorno requeridas estén configuradas
 @Component
 public class StartupValidator {
     private final Logger logger = LoggerFactory.getLogger(StartupValidator.class);
@@ -14,6 +15,7 @@ public class StartupValidator {
     @Value("${jwt.secret:}")
     private String jwtSecret;
 
+    // Valido que JWT_SECRET esté configurado al inicio de la aplicación
     @PostConstruct
     public void validate() {
         if (jwtSecret == null || jwtSecret.isBlank()) {

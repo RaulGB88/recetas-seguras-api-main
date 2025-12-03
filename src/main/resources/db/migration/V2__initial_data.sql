@@ -138,15 +138,15 @@ INSERT INTO foods (id, name, category) VALUES (608, 'Fideos', 'CEREAL')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
 
 -- Frutos secos (700+)
-INSERT INTO foods (id, name, category) VALUES (701, 'Almendras', 'FRUTO SECO')
+INSERT INTO foods (id, name, category) VALUES (701, 'Almendras', 'FRUTO_SECO')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
-INSERT INTO foods (id, name, category) VALUES (702, 'Nueces', 'FRUTO SECO')
+INSERT INTO foods (id, name, category) VALUES (702, 'Nueces', 'FRUTO_SECO')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
-INSERT INTO foods (id, name, category) VALUES (703, 'Avellanas', 'FRUTO SECO')
+INSERT INTO foods (id, name, category) VALUES (703, 'Avellanas', 'FRUTO_SECO')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
-INSERT INTO foods (id, name, category) VALUES (704, 'Castañas', 'FRUTO SECO')
+INSERT INTO foods (id, name, category) VALUES (704, 'Castañas', 'FRUTO_SECO')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
-INSERT INTO foods (id, name, category) VALUES (705, 'Pistachos', 'FRUTO SECO')
+INSERT INTO foods (id, name, category) VALUES (705, 'Pistachos', 'FRUTO_SECO')
 	ON DUPLICATE KEY UPDATE name=VALUES(name), category=VALUES(category);
 
 -- Snacks (800+)

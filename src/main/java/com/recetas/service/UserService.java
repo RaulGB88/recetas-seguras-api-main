@@ -109,7 +109,8 @@ public class UserService {
                 FoodDto dto = new FoodDto();
                 dto.id = food.getId();
                 dto.name = food.getName();
-                dto.category = food.getCategory() != null ? food.getCategory().name() : null;
+                // Emit UI-friendly display name for category
+                dto.category = food.getCategory() != null ? food.getCategory().getDisplayName() : null;
                 return dto;
             })
             .collect(Collectors.toList());

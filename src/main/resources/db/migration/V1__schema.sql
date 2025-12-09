@@ -1,5 +1,5 @@
 -- =========================
--- SCHEMA: Create tables for application
+-- SCHEMA: Tables creation
 -- Compatible with H2 (tests) and MySQL (runtime)
 -- =========================
 
@@ -53,14 +53,6 @@ CREATE TABLE condition_foods (
   CONSTRAINT pk_condition_foods PRIMARY KEY (condition_id, food_id),
   CONSTRAINT fk_condition_foods_condition FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE,
   CONSTRAINT fk_condition_foods_food FOREIGN KEY (food_id) REFERENCES foods(id) ON DELETE CASCADE
-);
-
-CREATE TABLE condition_recipes (
-  condition_id INT NOT NULL,
-  recipe_id INT NOT NULL,
-  CONSTRAINT pk_condition_recipes PRIMARY KEY (condition_id, recipe_id),
-  CONSTRAINT fk_condition_recipes_condition FOREIGN KEY (condition_id) REFERENCES conditions(id) ON DELETE CASCADE,
-  CONSTRAINT fk_condition_recipes_recipe FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE
 );
 
 CREATE TABLE user_conditions (

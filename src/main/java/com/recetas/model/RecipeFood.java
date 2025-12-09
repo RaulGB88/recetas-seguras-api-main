@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+// Entidad RecipeFood: tabla intermedia que relaciona recetas con alimentos e incluye cantidad
 @Entity
 @Table(name = "recipe_foods")
 public class RecipeFood {
@@ -33,4 +34,6 @@ public class RecipeFood {
     public void setRecipe(Recipe recipe) { this.recipe = recipe; }
     public Food getFood() { return food; }
     public void setFood(Food food) { this.food = food; }
+    public String getQuantity() { return quantity; }
+    public void setQuantity(String quantity) { this.quantity = quantity; }
 }

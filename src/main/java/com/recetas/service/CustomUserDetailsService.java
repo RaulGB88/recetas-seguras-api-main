@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.recetas.model.User;
 import com.recetas.repository.UserRepository;
 
+// Servicio de Spring Security: cargo detalles del usuario para autenticación
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -22,12 +23,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    // Cargo el usuario por email para la autenticación de Spring Security
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOpt = userRepository.findByEmail(username);
         if (userOpt.isEmpty()) {
-            // En vez de lanzar excepción, devuelve un usuario sin privilegios o null
-            // Alternativamente, puedes lanzar la excepción pero loguear y devolver un error controlado
+            // Lanzo excepción si no encuentro el usuario
             throw new UsernameNotFoundException("User not found with email: " + username);
         }
         User user = userOpt.get();

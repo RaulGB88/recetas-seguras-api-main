@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recetas.model.Condition;
 import com.recetas.service.ConditionService;
 
+// Controlador de condiciones: manejo consultas de todas las condiciones médicas disponibles
 @RestController
 @RequestMapping("/api/conditions")
 public class ConditionController {
@@ -18,6 +19,7 @@ public class ConditionController {
         this.conditionService = conditionService;
     }
 
+    // Obtengo todas las condiciones médicas
     @GetMapping
     public List<Condition> getAllConditions() {
         return conditionService.getAllConditions();

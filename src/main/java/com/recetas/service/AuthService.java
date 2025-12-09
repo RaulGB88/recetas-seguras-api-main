@@ -20,6 +20,7 @@ import com.recetas.repository.RefreshTokenRepository;
 import com.recetas.repository.UserRepository;
 import com.recetas.security.JwtUtil;
 
+// Servicio de autenticación: gestiono registro, login, refresh tokens y cambio de contraseña
 @Service
 public class AuthService {
 
@@ -44,6 +45,7 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+    // Registro un nuevo usuario y genero tokens automáticamente
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.findByEmail(req.getEmail()).isPresent()) {
             throw new RuntimeException("Email ya registrado");
@@ -53,13 +55,14 @@ public class AuthService {
         u.setEmail(req.getEmail());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
         userRepository.save(u);
-        // auto-login: generate tokens
+        // Auto-login: genero tokens
         String access = jwtUtil.generateAccessToken(u.getEmail(), u.getId());
         RefreshToken rt = createRefreshToken(u);
         refreshTokenRepository.save(rt);
         return new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
     }
 
+    // Autentico al usuario y genero tokens de acceso
     public AuthResponse login(AuthRequest req) {
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
@@ -70,13 +73,14 @@ public class AuthService {
         return new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
     }
 
+    // Refresco el access token usando el refresh token válido
     public AuthResponse refresh(String refreshToken) {
         Optional<RefreshToken> r = refreshTokenRepository.findByToken(refreshToken);
         if (r.isEmpty() || r.get().isRevoked() || r.get().getExpiryDate().isBefore(Instant.now()))
             throw new RuntimeException("Refresh token inválido");
         RefreshToken existing = r.get();
         User user = existing.getUser();
-        // rotate refresh token: revoke existing and issue a new one
+        // Roto el refresh token: revoco el existente y emito uno nuevo
         existing.setRevoked(true);
         refreshTokenRepository.save(existing);
         RefreshToken newRt = createRefreshToken(user);
@@ -85,11 +89,13 @@ public class AuthService {
         return new AuthResponse(access, newRt.getToken(), accessTokenDurationMs / 1000, user.getId());
     }
 
+    // Revoco el refresh token para cerrar sesión
     public void logout(String refreshToken) {
         Optional<RefreshToken> r = refreshTokenRepository.findByToken(refreshToken);
         r.ifPresent(rt -> { rt.setRevoked(true); refreshTokenRepository.save(rt);} );
     }
 
+    // Creo un nuevo refresh token para el usuario
     private RefreshToken createRefreshToken(User user) {
         RefreshToken rt = new RefreshToken();
         rt.setToken(UUID.randomUUID().toString());
@@ -99,17 +105,18 @@ public class AuthService {
         return rt;
     }
 
+    // Cambio la contraseña del usuario verificando la contraseña actual
     public boolean changePassword(String email, String oldPassword, String newPassword) {
             Optional<User> userOpt = userRepository.findByEmail(email);
             if (userOpt.isEmpty()) {
                 return false;
             }
             User user = userOpt.get();
-            // Verifica la contraseña actual
+            // Verifico la contraseña actual
             if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
                 return false;
             }
-            // Actualiza la contraseña
+            // Actualizo la contraseña
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return true;

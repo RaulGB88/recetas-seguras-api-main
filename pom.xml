@@ -147,7 +147,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/recetas_seguras</url>
                     <user>root</user>
-                    <password>root</password>
+                    <password>rgb2312</password>
                     <locations>
                         <location>filesystem:src/main/resources/db/migration</location>
                     </locations>

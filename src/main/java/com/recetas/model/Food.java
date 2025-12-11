@@ -14,7 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-// Entidad Alimento: representa un alimento con su categoría y relaciones con condiciones
+// Defino alimento con categoría y relaciones con condiciones
 @Entity
 @Table(name = "foods")
 public class Food {
@@ -54,7 +54,7 @@ public class Food {
     @OneToMany(mappedBy = "food")
     private Set<RecipeFood> recipeFoods;
 
-    // getters and setters
+    // Defino getters y setters
     public Integer getId() {
         return id;
     }

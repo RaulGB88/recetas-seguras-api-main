@@ -9,7 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-// Entidad RecipeFood: tabla intermedia que relaciona recetas con alimentos e incluye cantidad
+// Relaciono recetas con alimentos e incluyo la cantidad
 @Entity
 @Table(name = "recipe_foods")
 public class RecipeFood {
@@ -29,7 +29,7 @@ public class RecipeFood {
     @Column(length = 50)
     private String quantity;
 
-    // getters and setters
+    // Defino getters y setters
     public Recipe getRecipe() { return recipe; }
     public void setRecipe(Recipe recipe) { this.recipe = recipe; }
     public Food getFood() { return food; }

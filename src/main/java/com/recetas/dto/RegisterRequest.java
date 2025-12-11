@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-// DTO para solicitud de registro de nuevo usuario
+// Defino DTO para solicitud de registro de nuevo usuario
 public class RegisterRequest {
     @NotBlank
     @Size(min = 3, max = 100)

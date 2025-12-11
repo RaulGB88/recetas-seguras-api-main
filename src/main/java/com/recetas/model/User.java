@@ -4,6 +4,8 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,7 +14,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-// Entidad Usuario: representa un usuario del sistema con sus condiciones médicas
+// Defino usuario del sistema y sus condiciones médicas
 @Entity
 @Table(name = "users")
 public class User {
@@ -40,6 +42,11 @@ public class User {
 
     @Column(nullable = false, length = 255)
     private String password;
+    
+    // NUEVO: rol del usuario (único rol, enfoque rápido)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", length = 50)
+    private com.recetas.model.Role role;
     
         public String getEmail() {
             return email;
@@ -85,6 +92,15 @@ public class User {
         }
         public void setConditions(Set<Condition> conditions) {
             this.conditions = conditions;
+        }
+
+        // NUEVO: getter/setter para role
+        public com.recetas.model.Role getRole() {
+            return role;
+        }
+
+        public void setRole(com.recetas.model.Role role) {
+            this.role = role;
         }
 
     @Column(name = "created_at")

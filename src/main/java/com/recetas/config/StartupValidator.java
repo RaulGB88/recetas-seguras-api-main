@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 
-// Validador de inicio: verifico que las variables de entorno requeridas estén configuradas
+// Verifico que las variables de entorno requeridas estén configuradas al iniciar la aplicación
 @Component
 public class StartupValidator {
     private final Logger logger = LoggerFactory.getLogger(StartupValidator.class);

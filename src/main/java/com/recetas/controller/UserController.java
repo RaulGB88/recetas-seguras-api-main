@@ -16,7 +16,7 @@ import com.recetas.dto.UserConditionRequest;
 import com.recetas.model.User;
 import com.recetas.service.UserService;
 
-// Controlador de usuarios: gestiono condiciones, alimentos y recetas seguras por usuario
+// Gestiono condiciones, alimentos y recetas seguras por usuario
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

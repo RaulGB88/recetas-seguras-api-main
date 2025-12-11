@@ -20,7 +20,7 @@ import com.recetas.service.AuthService;
 
 import jakarta.validation.Valid;
 
-// Controlador de autenticación: manejo registro, login, refresh token, logout y cambio de contraseña
+// Manejo registro, login, refresh token, logout y cambio de contraseña
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -33,21 +33,21 @@ public class AuthController {
         this.userRepository = userRepository;
     }
 
-    // Registro de nuevo usuario y auto-login
+    // Registro nuevo usuario y hago auto-login
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest req) {
         AuthResponse res = authService.register(req);
         return ResponseEntity.status(201).body(res);
     }
 
-    // Login con email y contraseña
+    // Autentico con email y contraseña
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest req) {
         AuthResponse res = authService.login(req);
         return ResponseEntity.ok(res);
     }
 
-    // Refresco del access token usando el refresh token
+    // Refresco el token de acceso usando el refresh token
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody java.util.Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
@@ -55,7 +55,7 @@ public class AuthController {
         return ResponseEntity.ok(res);
     }
 
-    // Logout: revoco el refresh token
+    // Cierro sesión: revoco el refresh token
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody java.util.Map<String, String> body) {
         String refreshToken = body.get("refreshToken");
@@ -75,7 +75,8 @@ public class AuthController {
         return u.map(user -> ResponseEntity.ok(java.util.Map.of(
                 "id", user.getId(),
                 "email", user.getEmail(),
-                "username", user.getUsername()
+            "username", user.getUsername(),
+            "role", user.getRole() != null ? user.getRole().name() : null
         ))).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
@@ -84,19 +85,16 @@ public class AuthController {
     public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody java.util.Map<String, String> body) {
         if (userDetails == null || userDetails.getUsername() == null) {
-            return ResponseEntity.status(401).body("No autenticado");
+            throw new com.recetas.exception.AuthenticationRequiredException();
         }
         String email = userDetails.getUsername();
         String oldPassword = body.get("oldPassword");
         String newPassword = body.get("newPassword");
-        if (oldPassword == null || newPassword == null) {
-            return ResponseEntity.badRequest().body("Faltan campos");
+        String confirmPassword = body.get("confirmPassword");
+        if (oldPassword == null || newPassword == null || confirmPassword == null) {
+            throw new com.recetas.exception.MissingFieldsException();
         }
-        boolean ok = authService.changePassword(email, oldPassword, newPassword);
-        if (ok) {
-            return ResponseEntity.ok().body("Contraseña actualizada");
-        } else {
-            return ResponseEntity.status(400).body("Contraseña actual incorrecta o error");
-        }
+        authService.changePassword(email, oldPassword, newPassword, confirmPassword);
+        return ResponseEntity.ok(java.util.Map.of("message", "Contraseña actualizada"));
     }
 }

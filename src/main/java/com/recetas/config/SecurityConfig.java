@@ -17,9 +17,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.recetas.exception.RestAccessDeniedHandler;
+import com.recetas.exception.RestAuthenticationEntryPoint;
 import com.recetas.security.JwtAuthFilter;
 
-// Configuración de seguridad: defino reglas de autenticación, CORS y filtros JWT
+// Defino reglas de autenticación, CORS y filtros JWT
 @Configuration
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
@@ -34,9 +36,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .exceptionHandling(eh -> eh
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .accessDeniedHandler(new RestAccessDeniedHandler())
+            )
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

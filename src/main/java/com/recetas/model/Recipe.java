@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-// Entidad Receta: representa una receta con sus ingredientes
+// Defino receta con sus ingredientes
 @Entity
 @Table(name = "recipes")
 public class Recipe {
@@ -50,7 +50,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe")
     private Set<RecipeFood> recipeFoods;
 
-    // getters and setters
+    // Defino getters y setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
     public String getTitle() { return title; }

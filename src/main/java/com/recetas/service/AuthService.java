@@ -33,7 +33,7 @@ public class AuthService {
     @Value("${jwt.refresh.exp-ms:2592000000}")
     private long refreshTokenDurationMs;
 
-    @Value("${jwt.access.exp-ms:3600000}")
+    @Value("${jwt.access.exp-ms:2592000000}")
     private long accessTokenDurationMs;
 
     public AuthService(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
@@ -48,29 +48,47 @@ public class AuthService {
     // Registro un nuevo usuario y genero tokens automáticamente
     public AuthResponse register(RegisterRequest req) {
         if (userRepository.findByEmail(req.getEmail()).isPresent()) {
-            throw new RuntimeException("Email ya registrado");
+            throw new com.recetas.exception.EmailAlreadyExistsException("El email ya está registrado");
+        }
+        if (req.getUsername() != null && userRepository.findByUsername(req.getUsername()).isPresent()) {
+            throw new com.recetas.exception.UsernameAlreadyExistsException("El nombre de usuario ya está en uso");
         }
         User u = new User();
         u.setUsername(req.getUsername());
         u.setEmail(req.getEmail());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
+        // Asignar rol por defecto (versión rápida)
+        u.setRole(com.recetas.model.Role.ROLE_USER);
         userRepository.save(u);
         // Auto-login: genero tokens
         String access = jwtUtil.generateAccessToken(u.getEmail(), u.getId());
         RefreshToken rt = createRefreshToken(u);
         refreshTokenRepository.save(rt);
-        return new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
+        AuthResponse resp = new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
+        resp.setRole(u.getRole() != null ? u.getRole().name() : null);
+        return resp;
     }
 
     // Autentico al usuario y genero tokens de acceso
     public AuthResponse login(AuthRequest req) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
-        User u = userRepository.findByEmail(req.getEmail()).get();
+        // Verificar si el email existe para distinguir error de email inválido vs contraseña inválida
+        var userOpt = userRepository.findByEmail(req.getEmail());
+        if (userOpt.isEmpty()) {
+            throw new org.springframework.security.core.userdetails.UsernameNotFoundException("Email no registrado");
+        }
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
+        } catch (org.springframework.security.authentication.BadCredentialsException ex) {
+            throw new com.recetas.exception.InvalidPasswordException("Contraseña inválida");
+        }
+        User u = userOpt.get();
         String access = jwtUtil.generateAccessToken(req.getEmail(), u.getId());
         RefreshToken rt = createRefreshToken(u);
         refreshTokenRepository.save(rt);
-        return new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
+        AuthResponse resp = new AuthResponse(access, rt.getToken(), accessTokenDurationMs / 1000, u.getId());
+        resp.setRole(u.getRole() != null ? u.getRole().name() : null);
+        return resp;
     }
 
     // Refresco el access token usando el refresh token válido
@@ -86,7 +104,9 @@ public class AuthService {
         RefreshToken newRt = createRefreshToken(user);
         refreshTokenRepository.save(newRt);
         String access = jwtUtil.generateAccessToken(user.getEmail(), user.getId());
-        return new AuthResponse(access, newRt.getToken(), accessTokenDurationMs / 1000, user.getId());
+        AuthResponse resp = new AuthResponse(access, newRt.getToken(), accessTokenDurationMs / 1000, user.getId());
+        resp.setRole(user.getRole() != null ? user.getRole().name() : null);
+        return resp;
     }
 
     // Revoco el refresh token para cerrar sesión
@@ -106,19 +126,30 @@ public class AuthService {
     }
 
     // Cambio la contraseña del usuario verificando la contraseña actual
-    public boolean changePassword(String email, String oldPassword, String newPassword) {
+    public void changePassword(String email, String oldPassword, String newPassword, String confirmPassword) {
             Optional<User> userOpt = userRepository.findByEmail(email);
             if (userOpt.isEmpty()) {
-                return false;
+                throw new org.springframework.security.core.userdetails.UsernameNotFoundException("Email no registrado");
             }
             User user = userOpt.get();
+            // Verifico que las nuevas contraseñas estén presentes
+            if (newPassword == null || confirmPassword == null) {
+                throw new com.recetas.exception.PasswordConfirmationMismatchException();
+            }
+            // Validación explícita de longitud para la nueva contraseña (coherente con registro)
+            if (newPassword.length() < 8 || newPassword.length() > 128) {
+                throw new com.recetas.exception.PasswordValidationException("size must be between 8 and 128");
+            }
+            // Verifico que las nuevas contraseñas coincidan
+            if (!newPassword.equals(confirmPassword)) {
+                throw new com.recetas.exception.PasswordConfirmationMismatchException();
+            }
             // Verifico la contraseña actual
             if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-                return false;
+                throw new com.recetas.exception.OldPasswordMismatchException();
             }
             // Actualizo la contraseña
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
-            return true;
     }
 }

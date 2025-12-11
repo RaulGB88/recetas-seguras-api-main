@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.recetas.model.RefreshToken;
 import com.recetas.model.User;
 
-// Repositorio de refresh tokens: acceso y limpieza de tokens de autenticación
+// Proveo acceso y limpieza de refresh tokens para autenticación
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
     // Busco refresh token por su valor
     Optional<RefreshToken> findByToken(String token);

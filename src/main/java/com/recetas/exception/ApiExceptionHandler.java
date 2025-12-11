@@ -10,21 +10,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
-// Manejador de excepciones de API: capturo y formatea errores en respuestas consistentes
+// Capturo y formateo errores de API en respuestas consistentes
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    // Manejo excepciones genéricas de runtime
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleRuntime(RuntimeException ex, WebRequest req) {
-        Map<String,Object> body = new HashMap<>();
-        body.put("timestamp", Instant.now().toString());
-        body.put("status", HttpStatus.BAD_REQUEST.value());
-        body.put("error", "Bad Request");
-        body.put("message", ex.getMessage());
-        body.put("path", req.getDescription(false));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-    }
+    // Nota: no manejo RuntimeException genérico aquí; dejo que los handlers
+    // específicos en `GlobalExceptionHandler` (p.ej. InvalidPasswordException)
+    // se apliquen y devuelvan el campo `code` requerido por los tests.
 
     // Manejo errores de validación de datos de entrada
     @ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
@@ -37,9 +29,19 @@ public class ApiExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(fe -> {
             errors.add(Map.of("field", fe.getField(), "message", fe.getDefaultMessage()));
         });
-        body.put("message", "Validation error");
-        body.put("details", errors);
+        // Detecto si hay un error sobre el campo password y expongo código específico
+        boolean hasPasswordError = ex.getBindingResult().getFieldErrors().stream()
+                .anyMatch(fe -> fe.getField() != null && fe.getField().toLowerCase().contains("password"));
+
+        // Uso el primer mensaje de error de campo (si existe) como mensaje principal
+        // y mantengo compatibilidad con lo que requieren los tests.
+        String topMessage = errors.isEmpty() ? "Validation error" : errors.get(0).get("message");
+        body.put("message", topMessage);
+        // Uso la clave `errors` para compatibilidad con las verificaciones de tests (se requiere `errors` en lugar de `details`)
+        body.put("errors", errors);
         body.put("path", req.getDescription(false));
+        // Añado código específico cuando corresponda
+        body.put("code", hasPasswordError ? "PASSWORD_ERROR" : "VALIDATION_FAILED");
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }
 }

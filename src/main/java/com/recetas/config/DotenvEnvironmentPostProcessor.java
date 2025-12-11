@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 
-// Procesador de entorno: cargo variables del archivo .env al inicio de Spring Boot
+// Cargo variables del archivo .env al inicio de Spring Boot
 public class DotenvEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
     private static final String PROPERTY_SOURCE_NAME = "dotenvProperties";
     private int order = Ordered.HIGHEST_PRECEDENCE + 10;

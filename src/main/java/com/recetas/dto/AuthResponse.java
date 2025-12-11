@@ -1,12 +1,13 @@
 package com.recetas.dto;
 
-// DTO para respuesta de autenticación con tokens y metadata
+// Defino DTO para respuesta de autenticación con tokens y metadata
 public class AuthResponse {
     private String accessToken;
     private String refreshToken;
     private String tokenType = "Bearer";
     private Long expiresIn;
     private Integer userId;
+    private String role;
 
     public AuthResponse() {}
 
@@ -32,4 +33,6 @@ public class AuthResponse {
     public void setExpiresIn(Long expiresIn) { this.expiresIn = expiresIn; }
     public Integer getUserId() { return userId; }
     public void setUserId(Integer userId) { this.userId = userId; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

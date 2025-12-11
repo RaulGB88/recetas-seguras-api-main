@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.recetas.dto.RecipeDto;
 import com.recetas.service.RecipeService;
 
-// Controlador de recetas: manejo consultas de todas las recetas disponibles
+// Consulto todas las recetas disponibles con sus ingredientes
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {

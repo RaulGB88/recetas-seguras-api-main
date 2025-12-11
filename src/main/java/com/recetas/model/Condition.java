@@ -15,7 +15,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
-// Entidad Condición: representa una condición médica (enfermedad, alergia, intolerancia) y sus alimentos prohibidos
+// Defino condición médica (enfermedad, alergia, intolerancia) y alimentos prohibidos
 @Entity
 @Table(name = "conditions")
 public class Condition {
@@ -63,7 +63,7 @@ public class Condition {
     )
     private Set<Food> foods;
 
-    // getters and setters
+    // Defino getters y setters
     public Set<Food> getFoods() {
         return foods;
     }

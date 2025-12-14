@@ -2,6 +2,7 @@ package com.recetas.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 // Defino DTO para solicitud de registro de nuevo usuario
@@ -16,6 +17,7 @@ public class RegisterRequest {
 
     @NotBlank
     @Size(min = 8, max = 128)
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "La contraseña debe contener al menos una letra y un número.")
     private String password;
 
     public RegisterRequest() {}

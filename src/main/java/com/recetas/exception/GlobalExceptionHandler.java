@@ -20,7 +20,7 @@ import jakarta.validation.ConstraintViolationException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-        // Manejo excepción de usuario no encontrado
+    // Manejo excepción de usuario no encontrado
     @ExceptionHandler(UsernameNotFoundException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleUsernameNotFound(UsernameNotFoundException ex) {
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.UNAUTHORIZED, "USER_NOT_FOUND", ex.getMessage()));
     }
 
-        // Manejo errores de runtime genéricos
+    // Manejo errores de runtime genéricos
     @ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleRuntime(RuntimeException ex) {
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "RUNTIME_ERROR", ex.getMessage()));
     }
 
-        // Manejo validación de DTOs con @Valid
+    // Manejo validación de DTOs con @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleMethodArgNotValid(MethodArgumentNotValidException ex) {
@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-        // Manejo ConstraintViolation (ej. parámetros path/query)
+    // Manejo ConstraintViolation (ej. parámetros path/query)
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleConstraintViolation(ConstraintViolationException ex) {
@@ -91,7 +91,7 @@ public class GlobalExceptionHandler {
         // Si hay una violación sobre `email`, la prefiero. Solo lanzo PasswordValidationException
         // cuando no exista una violación de email.
         if (emailViolation.isPresent()) {
-        // Construyo la respuesta estándar de CONSTRAINT_VIOLATION usando la lista `violations`
+            // Construyo la respuesta estándar de CONSTRAINT_VIOLATION usando la lista `violations`
         } else if (pw.isPresent()) {
             throw new com.recetas.exception.PasswordValidationException(pw.get().getMessage());
         }
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
-        // Manejo parseo JSON inválido
+    // Manejo parseo JSON inválido
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleMessageNotReadable(HttpMessageNotReadableException ex) {
@@ -115,7 +115,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "MALFORMED_JSON", ex.getMessage()));
     }
 
-        // Manejo acceso denegado
+    // Manejo acceso denegado
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
@@ -123,7 +123,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.FORBIDDEN, "ACCESS_DENIED", ex.getMessage()));
     }
 
-        // Manejo excepciones de autenticación (fallback)
+    // Manejo excepciones de autenticación (fallback)
     @ExceptionHandler(AuthenticationException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleAuthenticationException(AuthenticationException ex) {
@@ -131,7 +131,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.UNAUTHORIZED, "AUTH_ERROR", ex.getMessage()));
     }
 
-        // Manejo validación específica de password
+    // Manejo validación específica de password
     @ExceptionHandler(PasswordValidationException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handlePasswordValidation(PasswordValidationException ex) {
@@ -139,7 +139,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "PASSWORD_ERROR", ex.getMessage()));
     }
 
-        // Manejo contraseña inválida
+    // Manejo contraseña inválida
     @ExceptionHandler(InvalidPasswordException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleInvalidPassword(InvalidPasswordException ex) {
@@ -147,8 +147,8 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.UNAUTHORIZED, "INVALID_PASSWORD", ex.getMessage()));
     }
 
-        // Cuando la contraseña actual no coincide al cambiar contraseña, devuelvo 400
-        @ExceptionHandler(OldPasswordMismatchException.class)
+    // Cuando la contraseña actual no coincide al cambiar contraseña, devuelvo 400
+    @ExceptionHandler(OldPasswordMismatchException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleOldPasswordMismatch(OldPasswordMismatchException ex) {
         // Devolver 400 Bad Request en lugar de 401 para evitar que clientes
@@ -158,7 +158,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "OLD_PASSWORD_MISMATCH", ex.getMessage()));
     }
 
-        // Cuando las nuevas contraseñas no coinciden, devuelvo error 400
+    // Cuando las nuevas contraseñas no coinciden, devuelvo error 400
     @ExceptionHandler(PasswordConfirmationMismatchException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handlePasswordConfirmationMismatch(PasswordConfirmationMismatchException ex) {
@@ -166,7 +166,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "PASSWORD_CONFIRMATION_MISMATCH", ex.getMessage()));
     }
 
-        // Cuando el usuario no está autenticado para una operación, devuelvo 401
+    // Cuando el usuario no está autenticado para una operación, devuelvo 401
     @ExceptionHandler(AuthenticationRequiredException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleAuthenticationRequired(AuthenticationRequiredException ex) {
@@ -174,7 +174,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.UNAUTHORIZED, "NOT_AUTHENTICATED", ex.getMessage()));
     }
 
-        // Cuando faltan campos obligatorios en la petición, devuelvo 400
+    // Cuando faltan campos obligatorios en la petición, devuelvo 400
     @ExceptionHandler(MissingFieldsException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleMissingFields(MissingFieldsException ex) {
@@ -182,7 +182,7 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.BAD_REQUEST, "MISSING_FIELDS", ex.getMessage()));
     }
 
-        // Cuando el email ya está registrado, devuelvo 409
+    // Cuando el email ya está registrado, devuelvo 409
     @ExceptionHandler(EmailAlreadyExistsException.class)
     @ResponseBody
     public ResponseEntity<Map<String, Object>> handleEmailExists(EmailAlreadyExistsException ex) {
@@ -190,13 +190,13 @@ public class GlobalExceptionHandler {
                 .body(buildError(HttpStatus.CONFLICT, "EMAIL_ALREADY_EXISTS", ex.getMessage()));
     }
 
-        // Cuando el username ya está registrado, devuelvo 409
-        @ExceptionHandler(UsernameAlreadyExistsException.class)
-        @ResponseBody
-        public ResponseEntity<Map<String, Object>> handleUsernameExists(UsernameAlreadyExistsException ex) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                                .body(buildError(HttpStatus.CONFLICT, "USERNAME_ALREADY_EXISTS", ex.getMessage()));
-        }
+    // Cuando el username ya está registrado, devuelvo 409
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> handleUsernameExists(UsernameAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(buildError(HttpStatus.CONFLICT, "USERNAME_ALREADY_EXISTS", ex.getMessage()));
+    }
 
     // Manejo excepciones genéricas no capturadas por otros handlers
     @ExceptionHandler(Exception.class)

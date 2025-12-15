@@ -17,7 +17,11 @@ public class RegisterRequest {
 
     @NotBlank
     @Size(min = 8, max = 128)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "La contraseña debe contener al menos una letra y un número.")
+    // @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).+$", message = "La contraseña debe contener letras y números.")
+    /* @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$",
+            message = "La contraseña debe contener al menos una mayúscula, una minúscula y un número.") */
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!*()_\\-]).{8,}$",
+            message = "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial (@#$%^&+=!*()_-).")
     private String password;
 
     public RegisterRequest() {}
